@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#3b82f6">
+  <title>Little Lungs - AI Vision Feasibility Test</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="title-group">
+        <h1>🫁 Little Lungs Vision Test</h1>
+        <span class="subtitle">Phase 1: Huawei MatePad / WebAssembly Feasibility</span>
+      </div>
+      <div class="status-badge" id="modelStatusBadge">Loading Model...</div>
+    </header>
+
+    <!-- Metrics Bar: Displays live FPS and latency on screen -->
+    <section class="metrics-bar">
+      <div class="metric-card">
+        <span class="metric-label">FPS</span>
+        <span class="metric-value" id="fpsDisplay">--</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Inference</span>
+        <span class="metric-value" id="inferenceTimeDisplay">-- ms</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Total Frame</span>
+        <span class="metric-value" id="totalTimeDisplay">-- ms</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Detections</span>
+        <span class="metric-value" id="detectionCountDisplay">0</span>
+      </div>
+    </section>
+
+    <!-- Main Viewport Area -->
+    <main class="viewport-card">
+      <div class="viewport-wrapper" id="viewportWrapper">
+        <video id="videoElement" playsinline muted autoplay></video>
+        <img id="staticImageElement" alt="Test View" style="display: none;">
+        <canvas id="overlayCanvas"></canvas>
+        <div class="empty-state" id="emptyStateMessage">
+          <p>Camera is currently idle.</p>
+          <p class="hint">Click "Start Rear Camera" or run "Test on bus.jpg" below.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Controls Bar -->
+    <section class="controls-panel">
+      <div class="button-group">
+        <button id="btnStartCamera" class="btn btn-primary" disabled>
+          📹 Start Rear Camera
+        </button>
+        <button id="btnStopCamera" class="btn btn-secondary" style="display: none;">
+          ⏹ Stop Camera
+        </button>
+        <button id="btnSwitchCamera" class="btn btn-secondary" style="display: none;">
+          🔄 Flip Camera
+        </button>
+        <button id="btnRunTestImage" class="btn btn-outline" disabled>
+          🖼 Test on bus.jpg
+        </button>
+        <label class="btn btn-outline file-upload-label">
+          📁 Custom Image
+          <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
+        </label>
+      </div>
+
+      <!-- Detection Output Details -->
+      <details class="detections-details" open>
+        <summary>Detected Objects (Live Verification)</summary>
+        <div class="detections-table-container">
+          <table class="detections-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Confidence</th>
+                <th>Box [x1, y1, x2, y2]</th>
+              </tr>
+            </thead>
+            <tbody id="detectionsTableBody">
+              <tr>
+                <td colspan="3" class="text-muted">No detections yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
+    <!-- System & Debug Info -->
+    <footer class="app-footer">
+      <div class="footer-info">
+        <span>Backend: ONNX Runtime Web (WASM SIMD)</span> &bull; 
+        <span>Input: 320x320</span> &bull; 
+        <span id="offlineStatus">Online</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Local Vendor Scripts (Offline) -->
+  <script src="libs/ort.min.js"></script>
+  <script src="js/yolo.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js")
+          .then(reg => console.log("[PWA] Service Worker registered:", reg.scope))
+          .catch(err => console.warn("[PWA] Service Worker registration failed:", err));
+      });
+    }
+  </script>
+</body>
+</html>

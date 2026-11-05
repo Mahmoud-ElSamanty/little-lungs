@@ -1,0 +1,17 @@
+{
+  "name": "Little Lungs AI Vision",
+  "short_name": "LittleLungs",
+  "description": "Offline AI Vision Assistant for Little Lungs Anatomy Learning Board",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#2563eb",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "bus.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}
